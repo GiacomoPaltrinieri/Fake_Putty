@@ -6,25 +6,28 @@ import java.lang.reflect.Constructor;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+/** Client class **/
 public class Client implements Runnable {
 
-    Socket mioSocket = null;
-    public int codiceErrore;
-    String ricevuta;
+    /** Attribute Client class**/
+    public int error_code;
+    public String data_recive;
 
-    int porta;
-    String ip;
+    public int porta;
+    public String ip;
 
-    DataInputStream in;
-    DataOutputStream out;
+    public DataInputStream in;
+    public DataOutputStream out;
 
+    /*** public Constructor ***/
     public Client(int porta, String ip) {
         this.porta = porta;
         this.ip = ip;
-        codiceErrore = connetti();
+        error_code = connect();
     }
 
-    public void Comunica(String testo){
+    /*** method Send data ***/
+    public void send_data(String testo){
         try {
             System.out.print("Messaggio inviato: " + testo + "\n") ;
             out.writeBytes(testo + "\n");
@@ -37,8 +40,8 @@ public class Client implements Runnable {
         }
     }
 
-
-    public int connetti(){
+    /*** method Connect to server ***/
+    public int connect(){
         try {
             Socket mioSocket = new Socket(ip, porta);
             in = new DataInputStream(mioSocket.getInputStream());
@@ -52,21 +55,27 @@ public class Client implements Runnable {
         }
     }
 
+    /*** method Receive data ***/
     @Override
     public void run() {
+
         System.out.println("Sto ascoltando...");
         boolean flag = true;
-        while(flag){
-        try{
-            ricevuta = in.readLine();
-            new GUI(ricevuta);
 
-            if(ricevuta.equals("quit"))
-                flag = false;
-            else {
-                System.out.println("Risposta: " + ricevuta);
+        while(flag){
+            try{
+                data_recive = in.readLine();
+
+                if(data_recive.equals("quit"))
+                    flag = false;
+                else {
+                    System.out.println("Data recive str: " + data_recive);
+                }
+
+            }catch (Exception e){
+                System.out.println("Error recive");
+                e.printStackTrace();
             }
-        }catch (Exception e){ }
         }
     }
 }

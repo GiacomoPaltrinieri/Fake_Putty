@@ -12,7 +12,9 @@ import java.awt.event.KeyEvent;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
 
-public class GUI extends JFrame {
+public class GUI {
+
+    /** private Attribute **/
     private JPanel pannello_main;
     private JTabbedPane selezione;
     private JButton inviaButton;
@@ -21,6 +23,8 @@ public class GUI extends JFrame {
     private JTextField ip_serverTextField;
     private JSpinner porta_server;
     private JSpinner porta_client;
+
+
     private JTextField ip_clientTextField;
     private JTextArea errori;
     private JTextField contenutoMessaggio;
@@ -28,15 +32,13 @@ public class GUI extends JFrame {
     private Client cliente;
     private int codiceErrore;
 
+    /** public Constructor number 2 **/
     public GUI(String testo){
         areaMessaggi.setText(areaMessaggi.getText() + testo + "\n");
     }
 
+    /** public Constructor **/
     public GUI() {
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setContentPane(pannello_main);
-        this.pack();
-        this.setVisible(true);
         this.inviaButton.setEnabled(false);
 
         this.areaMessaggi.setFont(new Font("helevtica",Font.PLAIN, 17));
@@ -56,15 +58,14 @@ public class GUI extends JFrame {
                         errori.setForeground(Color.black);
                         errori.setText("Provo a connettermi...\n");
                         cliente = new Client((Integer) porta_client.getValue(), ip_clientTextField.getText());
-                        if (cliente.codiceErrore == 1){
+                        if (cliente.error_code == 1){
                             errori.setForeground(Color.green);
                             errori.append("---CONNESSIONE STABILITA---\n");
 
                             Thread t1 = new Thread(cliente);
                             t1.start();
 
-
-                            System.out.println("GUI: " + cliente.ricevuta);
+                            System.out.println("GUI: " + cliente.data_recive);
 
                             areaMessaggi.setForeground(Color.BLACK);
                             StyledDocument doc = areaMessaggi.getStyledDocument();
@@ -96,7 +97,7 @@ public class GUI extends JFrame {
                             });
 
                             inviaButton.addActionListener(e1 -> {
-                                cliente.Comunica(contenutoMessaggio.getText());
+                                cliente.send_data(contenutoMessaggio.getText());
                                 StyleConstants.setAlignment(obj, StyleConstants.ALIGN_LEFT);
                                 doc.setParagraphAttributes(0, doc.getLength(), obj, false);
                                 areaMessaggi.setText(areaMessaggi.getText() + "\n" + nickname.getText() + ": " + contenutoMessaggio.getText());
@@ -104,10 +105,10 @@ public class GUI extends JFrame {
                             });
 
 
-                        }else if (cliente.codiceErrore == 2){
+                        }else if (cliente.error_code == 2){
                             errori.setForeground(Color.red);
                             errori.append("Errore, host sconosciuto!\n");
-                        }else if (cliente.codiceErrore == 3){
+                        }else if (cliente.error_code == 3){
                             errori.setForeground(Color.red);
                             errori.append("Errore, impossibile stabilire la connessione!\n");
                         }
@@ -148,7 +149,7 @@ public class GUI extends JFrame {
                         StyleConstants.setAlignment(obj, StyleConstants.ALIGN_LEFT);
                         doc.setParagraphAttributes(0, doc.getLength(), obj, false);
                         areaMessaggi.setText(areaMessaggi.getText() + "\n" + nickname.getText() + ": " + contenutoMessaggio.getText());
-                        cliente.Comunica(nickname.getText() + ": " +contenutoMessaggio.getText());
+                        cliente.send_data(nickname.getText() + ": " +contenutoMessaggio.getText());
                         contenutoMessaggio.setText("");
                     }
                 }
@@ -162,31 +163,9 @@ public class GUI extends JFrame {
         // TODO: place custom component creation code here
     }
 
-    public static void main(String[] args) {
-
-        try {
-            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-
-            JFrame frame = new GUI();
-            frame.setSize(600,450);
-            ImageIcon foto = new ImageIcon("fake_putty.png");
-            frame.setIconImage(foto.getImage());
-            frame.setTitle("Fake_Putty");
-            frame.setAlwaysOnTop(true);
-
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (UnsupportedLookAndFeelException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+    /** getter methods **/
+    public JPanel getPannello_main() {
+        return pannello_main;
     }
+
 }

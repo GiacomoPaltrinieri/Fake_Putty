@@ -5,6 +5,7 @@ import java.net.Socket;
 
 
 public class Server {
+
     ServerSocket server = null;
     Socket client = null;
 
@@ -13,7 +14,8 @@ public class Server {
     DataInputStream in;
     DataOutputStream out;
 
-    public void Comunica(String testo){
+    /** Send data method **/
+    public void send_data(String testo){
 
         try {
 
@@ -30,14 +32,14 @@ public class Server {
         }
     }
 
-
-    public void ascolta(){
+    /** Receive data method **/
+    public void receive_data(){
         Test_Frame frame = new Test_Frame();
         JButton button = new JButton("clicca");
         JTextField textField = new JTextField();
 
         button.addActionListener(e -> {
-            Comunica(textField.getText());
+            send_data(textField.getText());
             textField.setText("");
         });
 
@@ -59,8 +61,8 @@ public class Server {
 
     }
 
-
-    public void attendi(){
+    /** Connect to client **/
+    public void conn_client(){
 
         try {
             server = new ServerSocket(porta); //inizializziamo il servizio
@@ -77,12 +79,12 @@ public class Server {
 
     }
 
+    /** main method **/
     public static void main(String[] args) {
         Server s = new Server();
-        s.attendi();
-        s.ascolta();
 
-
+        s.conn_client();
+        s.receive_data();
     }
 }
 
