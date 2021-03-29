@@ -38,7 +38,12 @@ public class Fake_putty {
                 }
             }
 
-            JFrame frame = new_frame(new GUI());
+
+            GUI obj = new GUI();
+            JFrame frame = new_frame(obj);
+            Thread t1 = new Thread(obj);
+
+
             frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             frame.setSize(Fake_putty.MAIN_FRAME_DIMENSION);
             ImageIcon foto = new ImageIcon("fake_putty.png");
